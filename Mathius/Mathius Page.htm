@@ -1,0 +1,586 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<title>Welcome to MATHIUS</title>
+</head>
+
+<body onkeydown="keydown(event)" onkeyup="keyup(event)">
+<p>Welcome to MATHIUS!</p>
+
+<audio autoplay loop>
+<source src="Sycamore_Drive_-_02_-_Moves.ogg" type="audio/ogg" /> 
+<source src="Sycamore_Drive_-_02_-_Moves.mp3" type="audio/mp3" />
+does not work in this browser.
+</audio>
+
+<canvas id="GameScreen" width="800" height="440" style="border:1px solid #c3c3c3;"></canvas>
+
+<script type="text/javascript">
+
+var CANVUS_WIDTH = 800;
+var CANVUS_HEIGHT = 440;
+var FPS = 30
+var GlobalVar;
+GlobalVar = setInterval(function(){
+		var canvas=document.getElementById("GameScreen");
+		var ctx=canvas.getContext("2d");
+		update();
+		draw(ctx);
+}, 1000/FPS);
+
+var c=document.getElementById("GameScreen");
+var ctx=c.getContext("2d");
+ctx.fillStyle="#000000";
+
+ctx.fillRect(0,0,CANVUS_WIDTH,CANVUS_HEIGHT);
+
+var score = 0;
+var life = 3;
+
+var enemy_pic=new Image();
+var avatar=new Image();
+var background=new Image();
+var one=new Image();
+var two=new Image();
+var three=new Image();
+var four=new Image();
+var five=new Image();
+var six=new Image();
+var seven=new Image();
+var eight=new Image();
+var nine=new Image();
+var zero=new Image();
+var score_r=new Image();
+var score_o=new Image();
+var score_y=new Image();
+var score_g=new Image();
+var score_b=new Image();
+
+score_r.src="score_r.png";
+score_o.src="score_o.png";
+score_y.src="score_y.png";
+score_g.src="score_g.png";
+score_b.src="score_b.png";
+
+
+var enemy_explo=new Image();
+var enemy_explo2=new Image();
+var pew = new Audio("42108__marcuslee__laser-wrath-6.wav");
+//var p_explode = new Audio("18384__inferno__largex.wav");
+var e_explode = new Audio("47252__nthompson__rocketexpl.wav");
+var avatarflame=new Image();
+var GG=new Image();
+GG.src="GAMEOVER.png";
+
+enemy_pic.src="enemy3.png";
+avatar.src="avatar2.png";
+background.src="SBG.png";
+one.src="one.png";
+two.src="two.png";
+three.src="three.png";
+four.src="four.png";
+five.src="five.png";
+six.src="six.png";
+seven.src="seven.png";
+eight.src="eight.png";
+nine.src="nine.png";
+zero.src="zero.png";
+enemy_explo.src="enemyEX_00.png";
+enemy_explo2.src="ONE_UP.png";
+avatarflame.src="flame.png";
+
+//Mathius------------------------------------
+var Mathius={
+	x: 30,
+	ydraw: 30,
+	y: 47,
+	width: 70,
+	height: 23,
+	draw: function(){
+		ctx.drawImage(avatar,this.x,this.ydraw);
+	}	
+};
+
+var player_eqn = Math.floor(Math.random()*12); 
+
+//Enemies-------------------------------------
+
+var enemies = [];
+
+//Bullet List---------------------------------
+
+var playerBullets = [];
+
+var explosionlist = [];
+
+//Explode constructor
+
+function Explosion(I)
+{
+	I = I || {};
+	
+	I.active=true;
+	setTimeout(function () {I.active=false;},500);
+	
+	I.draw = function()
+	{
+		ctx.drawImage(enemy_explo,this.x,this.y);
+	};
+	I.update = function()
+	{
+		
+		//this.active = true;
+	};
+	
+	return I;
+}
+function Explosion2(I)
+{
+	I = I || {};
+	
+	I.active=true;
+	setTimeout(function () {I.active=false;},500);
+	
+	I.draw = function()
+	{
+		ctx.drawImage(enemy_explo2,this.x,this.y);
+	};
+	I.update = function()
+	{
+		
+		//this.active = true;
+	};
+	
+	return I;
+}
+
+
+//--------------------------------------------
+
+var score_sheet = [5];
+score_sheet[0] = score_b;
+score_sheet[1] = score_g;
+score_sheet[2] = score_y;
+score_sheet[3] = score_o;
+score_sheet[4] = score_r;
+var score_track = 2;
+
+var avatarEqn = [13];
+avatarEqn[0] = {Equation: "2x=0", Ans: 0};
+avatarEqn[1] = {Equation: "7+x=14", Ans: 7};
+avatarEqn[2] = {Equation: "93-x=84", Ans: 9};
+avatarEqn[3] = {Equation: "10/x=2", Ans: 5};
+avatarEqn[4] = {Equation: "2+7-x=5", Ans: 4};
+avatarEqn[5] = {Equation: "1+x=3", Ans: 2};
+avatarEqn[6] = {Equation: "5+x=9", Ans: 4};
+avatarEqn[7] = {Equation: "2x=10", Ans: 5};
+avatarEqn[8] = {Equation: "x+7=8", Ans: 1};
+avatarEqn[9] = {Equation: "9/x=3", Ans: 3};
+avatarEqn[10] = {Equation: "(x+2)^2=16", Ans: 2};
+avatarEqn[11] = {Equation: "64/x=8", Ans: 8};
+avatarEqn[12] = {Equation: "7x=42", Ans: 6};
+
+var enemyEqn = [51];
+enemyEqn[0] = {Equation: "4x / 2 = 10", Ans: 5};
+enemyEqn[1] = {Equation: "7x = 49", Ans: 7};
+enemyEqn[2] = {Equation: "12x = 108", Ans: 9};
+enemyEqn[3] = {Equation: "10391x = 0", Ans: 0};
+enemyEqn[4] = {Equation: "2 - x = -3", Ans: 5};
+enemyEqn[5] = {Equation: "-4x = -20", Ans: 5};
+enemyEqn[6] = {Equation: "77 / x = 11", Ans: 7};
+enemyEqn[7] = {Equation: "(x+2) / 4 = 2", Ans: 6};
+enemyEqn[8] = {Equation: "x = 1" , Ans: 1};
+enemyEqn[9] = {Equation: "36/x = 6", Ans: 6};
+enemyEqn[10] = {Equation: "x/2 = 2", Ans: 4};
+enemyEqn[11] = {Equation: "20-x=11", Ans: 9};
+enemyEqn[12] = {Equation: "x+1=10", Ans: 9};
+enemyEqn[13] = {Equation: "18/x=2", Ans: 9};
+enemyEqn[14] = {Equation: "x*3=27", Ans: 9};
+enemyEqn[15] = {Equation: "12+x=20", Ans: 8};
+enemyEqn[16] = {Equation: "x-4=4", Ans: 8};
+enemyEqn[17] = {Equation: "64/x=8", Ans: 8};
+enemyEqn[18] = {Equation: "x*3=24", Ans: 8};
+enemyEqn[19] = {Equation: "x-2=5", Ans: 7};
+enemyEqn[20] = {Equation: "x+2=9", Ans: 7};
+enemyEqn[21] = {Equation: "21/x=3", Ans: 7};
+enemyEqn[22] = {Equation: "2*x=14", Ans: 7};
+enemyEqn[23] = {Equation: "18-x=12", Ans: 6};
+enemyEqn[24] = {Equation: "6+x=12", Ans: 6};
+enemyEqn[25] = {Equation: "24/x=4", Ans: 6};
+enemyEqn[26] = {Equation: "x*3=18", Ans: 6};
+enemyEqn[27] = {Equation: "12-x=7", Ans: 5};
+enemyEqn[28] = {Equation: "5+x=10", Ans: 5};
+enemyEqn[29] = {Equation: "25/x=5", Ans: 5};
+enemyEqn[30] = {Equation: "x*3=15", Ans: 5};
+enemyEqn[31] = {Equation: "x-1=3", Ans: 4};
+enemyEqn[32] = {Equation: "x*3=12", Ans: 4};
+enemyEqn[33] = {Equation: "x+8=12", Ans: 4};
+enemyEqn[34] = {Equation: "x/2=2", Ans: 4};
+enemyEqn[35] = {Equation: "98-x=95", Ans: 3};
+enemyEqn[36] = {Equation: "57+x=60", Ans: 3};
+enemyEqn[37] = {Equation: "x*4=12", Ans: 3};
+enemyEqn[38] = {Equation: "9/x=3", Ans: 3};
+enemyEqn[39] = {Equation: "8*x=16", Ans: 2};
+enemyEqn[40] = {Equation: "x/2=1", Ans: 2};
+enemyEqn[41] = {Equation: "x+6=8", Ans: 2};
+enemyEqn[42] = {Equation: "9-x=7", Ans: 2};
+enemyEqn[43] = {Equation: "x*3=3", Ans: 1};
+enemyEqn[44] = {Equation: "9/x=9", Ans: 1};
+enemyEqn[45] = {Equation: "x-1=0", Ans: 1};
+enemyEqn[46] = {Equation: "25+x=26", Ans: 1};
+enemyEqn[47] = {Equation: "9*x=0", Ans: 0};
+enemyEqn[48] = {Equation: "84/x=Infinite", Ans: 0};
+enemyEqn[49] = {Equation: "6-x=6", Ans: 0};
+enemyEqn[50] = {Equation: "x+2=2", Ans: 0};
+
+
+
+
+
+var spawn= new Boolean(1);
+var Alive=new Boolean(1);
+var flame=new Boolean(0);
+var flamex;
+var flamey;
+
+function update()
+{
+	if(left){Mathius.x-=5;}
+	if(right){Mathius.x+=5; flamex=Mathius.x-40; flamey=Mathius.y;}
+	if(up) {Mathius.ydraw-=3;Mathius.y-=3; flamex=Mathius.x-40; flamey=Mathius.y;}
+	if(down) {Mathius.ydraw+=3;Mathius.y+=3; flamex=Mathius.x-40; flamey=Mathius.y;}
+	
+	if(Mathius.x > (CANVUS_WIDTH - 70)) Mathius.x=CANVUS_WIDTH-70;
+	if(Mathius.ydraw > (CANVUS_HEIGHT - 40)) {Mathius.ydraw=CANVUS_HEIGHT-40; Mathius.y=CANVUS_HEIGHT-23}
+	if(Mathius.x < 0) Mathius.x=0;
+	if(Mathius.ydraw < 0) {Mathius.ydraw=0; Mathius.y=17;}
+	
+	playerBullets.forEach(function(bullet) {
+    		bullet.update();
+  	});
+  	
+  	playerBullets = playerBullets.filter(function(bullet) {
+    		return bullet.active;
+  	});
+  	
+	enemies.forEach(function(enemy) {
+    		enemy.update();
+  	});
+  	
+  	explosionlist.forEach(function(explosion) {
+  			explosion.update();
+  	});
+  	
+  	enemies = enemies.filter(function(enemy) {
+    	return enemy.active;
+    });
+
+	if(spawn){
+  		if(Math.random()*3 < 0.1) {
+    			enemies.push(Enemy());
+    			spawn=false;
+    			setTimeout(function (){spawn=true},1300)
+  		}
+  	}
+	handleCollisions();
+	
+	explosionlist=explosionlist.filter(function(explosion) {
+		return explosion.active;	
+	});
+
+	
+//	for(i=0; i<ENEMY_LIMIT; i++)
+//	{
+//		enemyArray[i].xpos -= enemyArray[i].rate;
+//		if (enemyArray[i].xpos < -100)
+//		{
+//			enemyArray[i].xpos=CANVUS_WIDTH;
+//			enemyArray[i].eqn = enemyEqn[Eqn_Tracker].Equation;
+//		}
+//		Eqn_Tracker++;
+//		if (Eqn_Tracker > EQN_TRACKER_MAX) {Eqn_Tracker = 0;}
+//	}
+
+}
+
+function collides(a, b) {
+  	return a.x < b.x + b.width &&
+         	a.x + a.width > b.x &&
+         	a.y < b.y + b.height &&
+         	a.y + a.height > b.y;
+}
+
+function handleCollisions() {
+  	playerBullets.forEach(function(bullet) {
+    		enemies.forEach(function(enemy) {
+      			if (collides(bullet, enemy)) {
+        			bullet.active = false;
+        			if(enemy.weak == bullet.value){
+        				explode(enemy); score += 10; score_track += 1; if (score_track > 4) score_track = 4;
+        			}
+        			else{enemy.xVelocity -= 5; score -=5; score_track -= 1; if (score_track < 0) score_track = 0;
+        			}
+      			}
+    		});
+  	});
+
+  	enemies.forEach(function(enemy)
+  	{
+    	if (collides(enemy, Mathius))
+   		{
+ 	   		if(enemy.weak == avatarEqn[player_eqn].Ans)
+	   		{
+ 	   			explode2(enemy);
+ 	   			life += 1; score += 15; score_track += 1; if (score_track > 4) score_track = 4; player_eqn = Math.floor((Math.random()*12)+1);
+ 	   		} else {life -= 1; if (life<0) Alive=false; score -= 10; explode(enemy); score_track -= 1; if (score_track < 0) score_track = 0; Mathius.explode();}
+  		}
+  	});
+}
+
+var left=new Boolean(0); 
+var right=new Boolean(0);
+var down=new Boolean(0);
+var up=new Boolean(0);
+
+left=true;
+left=false;
+down=true;
+down=false;
+up=true;
+up=false;
+right=true;
+right=false;
+power_shot=true;
+power_shot=false;
+
+function keydown(event){
+	if (event.keyCode==38) {up=true; flame=true;}	
+	if (event.keyCode==37) left=true;
+	if (event.keyCode==39) {right=true; flame=true;}
+	if (event.keyCode==40) {down=true; flame=true;}
+	if (event.keyCode==13) power_shot=true;
+	if (event.keyCode==48) Mathius.shoot(0);
+	if (event.keyCode==49) Mathius.shoot(1);
+	if (event.keyCode==50) Mathius.shoot(2);
+	if (event.keyCode==51) Mathius.shoot(3);
+	if (event.keyCode==52) Mathius.shoot(4);
+	if (event.keyCode==53) Mathius.shoot(5);
+	if (event.keyCode==54) Mathius.shoot(6);
+	if (event.keyCode==55) Mathius.shoot(7);
+	if (event.keyCode==56) Mathius.shoot(8);
+	if (event.keyCode==57) Mathius.shoot(9);
+}
+
+function keyup(event){
+	if (event.keyCode==38) {up=false; flame=false;}
+	if (event.keyCode==37) left=false;
+	if (event.keyCode==39) {right=false; flame=false;}
+	if (event.keyCode==40) {down=false; flame=false;}
+	if (event.keyCode==13) power_shot=false;
+}
+
+function draw(ctx)
+{
+	ctx.clearRect(0,0,CANVUS_WIDTH,CANVUS_HEIGHT);
+
+	ctx.fillRect(0,0,CANVUS_WIDTH,CANVUS_HEIGHT);
+	ctx.drawImage(background,0,0);
+	
+	ctx.fillStyle="#ffffff";
+	ctx.font="30px Ariel";
+	ctx.fillText(avatarEqn[player_eqn].Equation, 10, 40);
+	ctx.fillText(life, 20, 80);
+	//ctx.fillText(Mathius.x, 10, CANVUS_HEIGHT - 10);
+	//ctx.fillText(Mathius.y, 100, CANVUS_HEIGHT - 10);
+	//ctx.fillText(Mathius.ydraw, 200, CANVUS_HEIGHT - 10);
+	
+	ctx.drawImage(score_sheet[score_track],0,330);
+	ctx.fillText(score, 220, 400);
+
+//	for(i=0; i<ENEMY_LIMIT; i++)
+//	{
+//		ctx.drawImage(enemy,enemyArray[i].xpos,enemyArray[i].ypos);
+//		ctx.font="20px Ariel";
+//		ctx.fillText(enemyArray[i].eqn,enemyArray[i].xpos,enemyArray[i].ypos - 5);
+//	}
+	
+	//Blitting the player
+	//ctx.drawImage(avatar,placex,placey);
+	
+	Mathius.draw();
+	
+	//Blitting the Bullets
+	playerBullets.forEach(function(bullet) {
+    		bullet.draw();
+  	});
+
+	//Test info
+	//ctx.fillText("Bullets on Screen ", 5, 10);
+	//ctx.fillText(playerBullets.length, 90, 10);
+	
+	//Blitting the enemies
+	enemies.forEach(function(enemy) {
+    		enemy.draw();
+  	});
+  	
+  	explosionlist.forEach(function (explosion) {explosion.draw();});
+  	if(flame==true) ctx.drawImage(avatarflame,flamex,flamey);
+	if(!Alive) {ctx.drawImage(GG,0,0);clearInterval(GlobalVar);}
+}
+
+
+//placex=30;
+//placey=30;
+EQN_TRACKER_MAX = 10;
+Eqn_Tracker=0;
+
+//Mathius Object------------------------------
+
+Mathius.midpoint = function() {
+	//alert(this.y);
+  	return {
+    		x: this.x + this.width/2,
+    		y: this.y + this.height/2
+  	};
+};
+
+
+Mathius.shoot = function(val) {
+  	var bulletPosition = this.midpoint();
+  	pew.currentTime=0;
+  	pew.play();
+ 	playerBullets.push(Bullet({
+		value: val,
+    	speed: 5,
+   		x: bulletPosition.x+4,
+    	y: bulletPosition.y-15
+  	}));
+};
+
+
+//Bullet List func----------
+function Bullet(I) {
+ 	I.active = true;
+
+	I.xVelocity = I.speed;
+  	I.yVelocity = 0;
+  	I.width = 30;
+  	I.height = 30;
+  	
+  	if(I.value==0){I.pic=zero};
+	if(I.value==1){I.pic=one};
+	if(I.value==2){I.pic=two};
+	if(I.value==3){I.pic=three};
+	if(I.value==4){I.pic=four};
+	if(I.value==5){I.pic=five};
+	if(I.value==6){I.pic=six};
+	if(I.value==7){I.pic=seven};
+	if(I.value==8){I.pic=eight};
+	if(I.value==9){I.pic=nine};
+
+  	
+  	I.inBounds = function() {
+    		return I.x >= 0 && I.x <= CANVUS_WIDTH &&
+      			I.y >= 0 && I.y <= CANVUS_HEIGHT;
+  	};
+
+  	I.draw = function() {
+    	//ctx.fillStyle = this.color;
+		//ctx.fillText(I.value.toString(), this.x,this.y);
+		ctx.drawImage(I.pic,this.x,this.y);
+		
+  	};
+
+  	I.update = function() {
+    		I.x += I.xVelocity;
+    		I.y += I.yVelocity;
+
+    		I.active = I.active && I.inBounds();
+  	};
+
+  	return I;
+}
+
+
+//Enemy List------------------------------------
+
+function explode(enemy) {
+	enemy.active = false;
+	e_explode.currentTime=0;
+	e_explode.play();
+		explosionlist.push(Explosion({
+			x:enemy.x,
+			y:enemy.y
+		}));
+		
+		//ctx.drawImage(enemy_explo,I.x,I.ydraw);
+};
+
+function explode2(enemy) {
+	enemy.active = false;
+	e_explode.currentTime=0;
+	e_explode.play();
+		explosionlist.push(Explosion2({
+			x:enemy.x,
+			y:enemy.y
+		}));
+		
+		//ctx.drawImage(enemy_explo,I.x,I.ydraw);
+};
+
+	
+function Enemy(I) {
+  	I = I || {};
+
+  	I.active = true;
+
+  	I.x = CANVUS_WIDTH;
+  	I.y = CANVUS_HEIGHT / 4 + Math.random() * CANVUS_HEIGHT / 2;
+  	I.xVelocity = -2;
+  	I.yVelocity = 0;
+  	I.width = 90;
+  	I.height = 75;
+  	
+  	I.temp = Math.floor(Math.random()*50);
+  	I.eqn = enemyEqn[I.temp].Equation; 
+	I.weak = enemyEqn[I.temp].Ans;
+
+  	I.inBounds = function() {
+    		return I.x >= 0 && I.x <= CANVUS_WIDTH &&
+      			I.y >= 0 && I.y <= CANVUS_HEIGHT;
+  	};
+
+  	I.draw = function()
+  	{
+  		ctx.drawImage(enemy_pic,this.x,this.y);
+  		ctx.font="20px Ariel";
+		ctx.fillText(this.eqn,this.x,this.y + 10);
+  	};
+
+  	I.update = function() {
+    		I.x += I.xVelocity;
+    		I.y += I.yVelocity;
+    		I.active = I.active && I.inBounds();
+    		
+  	};
+
+  return I;
+};
+
+//OLD ENEMY LIST----------------------------------
+var ENEMY_LIMIT = 5;
+var enemyArray = [5];
+enemyArray[0] = {alive:1, xpos:CANVUS_WIDTH, ypos:CANVUS_HEIGHT*.04, rate:2, eqn: ""};
+enemyArray[1] = {alive:1, xpos:CANVUS_WIDTH, ypos:CANVUS_HEIGHT*.23, rate:2, eqn: ""};
+enemyArray[2] = {alive:1, xpos:CANVUS_WIDTH, ypos:CANVUS_HEIGHT*.41, rate:2, eqn: ""};
+enemyArray[3] = {alive:1, xpos:CANVUS_WIDTH, ypos:CANVUS_HEIGHT*.59, rate:2, eqn: ""};
+enemyArray[4] = {alive:1, xpos:CANVUS_WIDTH, ypos:CANVUS_HEIGHT*.77, rate:2, eqn: ""};
+
+
+</script>
+
+</body>
+
+</html>
