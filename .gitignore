@@ -215,4 +215,4 @@ pip-log.txt
 .mr.developer.cfg
 
 #Mathius-Multi
-node-modules
+node_modules
