@@ -1,4 +1,4 @@
-Mathius-Multi
+Mathius.js
 =============
 
 2013 IDF Hackathon project extending the game to the cloud and beyond!
