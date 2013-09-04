@@ -1,7 +1,7 @@
 ---
 applications:
 - name: Mathius
-  command: node app.js
+  command: node Server-CF
   memory: 128M
   instances: 1
   host: none
