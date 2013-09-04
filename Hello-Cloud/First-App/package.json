@@ -5,7 +5,7 @@
 		"cf-autoconfig": "*",
 		"express": "*",
 		"jade": "*",
-		"socket.io": "*",
+		"mongojs": "*",
 		"ejs": "*"
 	}
 }
