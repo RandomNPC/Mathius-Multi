@@ -25,15 +25,15 @@ module.exports=function() {
 	app.get('/', function(req, res) {
 		res.render('stable.html');
 	});
-
+	
 
 	http.createServer(app).listen(app.get('port'), function() {
 		console.log('Express server listening on port '+app.get('port'));
 	});
 	
 	app.get('/gameover/*',function(req,res){
-		console.log('I made it');
-		console.log('Final score ' + req.params[0]);
+		
+		var _gameScore = req.params[0];
 		//check to see if in top 10
 		//if in top 10, ask for input name
 		//have mongodb save the score
