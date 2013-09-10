@@ -7,6 +7,7 @@ var gameHeight = canvasMain.height;
 
 var goback = new Button(32,188,111,213); //mystery buttons
 var mystery = new Button(280,529,96,198);
+var buttonSound = new Audio('snds/Blip_Select.wav');
 
 var btnPlay = new Button(100,700,200,250); //Start
 var highScoresBtn =  new Button(100,700,260,310);//High Score
@@ -54,7 +55,7 @@ function Button(xL,xR,yT,yB){
 }
 
 Button.prototype.checkClicked = function() { //checks to see if you have clicked within the area
-    if (this.xLeft <= mouseX && mouseX <= this.xRight && this.yTop <= mouseY && mouseY <= this.yBottom) return true;
+    if (this.xLeft <= mouseX && mouseX <= this.xRight && this.yTop <= mouseY && mouseY <= this.yBottom) { buttonSound.play(); return true; }
 };
 
 //event
