@@ -1,3 +1,4 @@
+
 var canvasMain = document.getElementById('main');
 var ctxMain = canvasMain.getContext('2d');
 
@@ -8,6 +9,8 @@ var btnPlay = new Button(148,591,159,302); //define button to play
 
 var goback = new Button(32,188,111,213); //mystery buttons
 var mystery = new Button(280,529,96,198);
+
+var creditsBtn = new Button(148,591,305,448);
 
 var MAIN_MENU = 1; 
 var MYSTERY = 2; //START GAME
@@ -24,6 +27,8 @@ var menu = new Image();
 menu.src = 'images/menu.png';
 var choose = new Image();
 choose.src = 'images/mystery.png';
+var creditsImg = new Image();
+creditsImg.src = 'images/Test.png';
 
 menu.addEventListener('load',init,false); //when image finishes loading, goto init function.
 
@@ -35,7 +40,8 @@ function init(){
 
 //menu
 function drawMenu(){
-	ctxMain.drawImage(menu,0,0,gameWidth,gameHeight,0,0,gameWidth,gameHeight); //draw the entire image menu
+	ctxMain.drawImage(creditsImg,0,0,gameWidth,gameHeight,0,0,gameWidth,gameHeight); //draw the entire image menu
+	//ctxMain.drawImage(choose,0,0,gameWidth,GameHeight,0,0,gameWidth,gameHeight);
 }
 
 //Button
@@ -58,8 +64,16 @@ function mouseClicked(e) { //event listener binded from line 19
 	switch(state){
 		case MAIN_MENU:
 			if (btnPlay.checkClicked()){
+				console.log("Play Button");
 				ctxMain.drawImage(choose,0,0,gameWidth,gameHeight,0,0,gameWidth,gameHeight);
 				state = MYSTERY;
+			}
+			if (creditsBtn.checkClicked()){
+				console.log("Credits clicked");
+				ctxMain.drawImage(creditsImg,0,0,gameWidth,gameHeight,0,0,gameWidth,gameHeight);
+				console.log("it Drew!");
+				state = CREDITS;
+				console.log("it changed state");
 			}
 			break;
 		case MYSTERY:
@@ -70,6 +84,12 @@ function mouseClicked(e) { //event listener binded from line 19
 			if(mystery.checkClicked()){
 				alert('boo');
 			}
+			break;
+		case CREDITS:
+			if(goback.checkClicked()){
+				ctxMain.drawImage(menu,0,0,gameWidth,gameHeight,0,0,gameWidth,gameHeight);
+				state = MAIN_MENU;
+			}			
 			break;
 		default:
 			break;
