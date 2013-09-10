@@ -9,8 +9,12 @@ var btnPlay = new Button(148,591,159,302); //define button to play
 var goback = new Button(32,188,111,213); //mystery buttons
 var mystery = new Button(280,529,96,198);
 
-var MAIN_MENU = 1;
-var MYSTERY = 2;
+var MAIN_MENU = 1; 
+var MYSTERY = 2; //START GAME
+var CONTROLS = 3;
+var HIGHSCORE = 4;
+var CREDITS = 5;
+
 var state = MAIN_MENU;
 
 var mouseX = 0;
