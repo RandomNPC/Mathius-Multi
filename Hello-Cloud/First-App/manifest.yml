@@ -5,5 +5,5 @@ applications:
   memory: 128M
   instances: 1
   host: none
-  domain: none
+  domain: phat.intel.com
   path: .

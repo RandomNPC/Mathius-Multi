@@ -1,41 +1,20 @@
+var util = require('util');
+var events = require('events');
+var db = require('mongojs').connect('localhost/mathiushighscores',['scores']);
+
 var Highscore = require('./Highscore.js');
-var _MAX_ENTRIES = 10;
-var _isHighScore;
-var _hs;
-var _pos;
 
-function HighscoreManager(){
-	_isHighscore = new Boolean('false');
-	_pos = -1;
-	_hs = null;
-}
 
-HighscoreManager.prototype.loadScores = function(){
-	return 'loadscores ok';
+var HighscoreManager = function(){
+	
+	this.add = function(obj){	
+		db.scores.save(obj,function(err, res){
+			if(!res || err) console.log('error saving item to server: ' + err);
+			db.scores.find({ score : { $lt : obj.score}}).count(function(err,res){
+				console.log(res);
+			});
+		});
+	}
 }
-
-HighscoreManager.prototype.addScore = function(score){
-	return 'scores ok ' + score;
-}
-
-HighscoreManager.prototype.sortScores = function(){
-	return 'sortscores ok';
-}
-
-HighscoreManager.prototype.saveScores = function(){
-	return 'savescores ok';
-}
-
-HighscoreManager.prototype.set_isHighScore = function(state){
-	_isHighScore = state;
-	return 'set_ishighscore ok';
-}
-HighscoreManager.prototype.get_isHighScore = function(){
-	return _isHighScore + ' getisHighscore ok';
-}
-
-HighscoreManager.prototype.instance = function(){
-	return _hs;
-}
-
+util.inherits(HighscoreManager,events.EventEmitter);
 module.exports = HighscoreManager;
