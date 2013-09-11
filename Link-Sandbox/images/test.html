@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<body onkeydown="keydown(event)" onkeyup="keyup(event)">
+
+
+
+<canvas id="GameScreen" width="200" height="100" style="border:1px solid #c3c3c3;">
+Your browser does not support the canvas element.
+</canvas>
+
+<script type="text/javascript">
+
+var CANVAS_WIDTH=200;
+var CANVAS_HEIGHT=100;
+var avatar=new Image();
+avatar.src="avatar.png";
+var canvas=document.getElementById("GameScreen");
+var ctx=canvas.getContext("2d");
+
+var FPS = 30;
+setInterval(function() {
+	update();
+	draw();
+}, 1000/FPS);
+
+var textX = 10;
+var textY = 10;
+function draw() {
+	ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+	player.draw();
+	ctx.fillStyle = "#000";
+	ctx.fillText("Sup Bro!", textX, textY);
+	ctx.fillText("U MAD?! ", textX+20, textY+9);
+	playerBullets.forEach(function(bullet) {
+    		bullet.draw();
+  	});
+
+	ctx.fillText("Bullets on Screen ", 5, 10);
+	ctx.fillText(playerBullets.length, 90, 10);
+
+	enemies.forEach(function(enemy) {
+    		enemy.draw();
+  	});
+}
+
+function update() {
+	textX += 1;
+	textY += 1;
+	if(left==true){
+		player.x-=5;
+	}
+	if(right==true){
+		player.x+=5;
+	}
+	if(up) {player.y-=3;}
+	if(down) {player.y+=3;}
+	if (player.x > (CANVAS_WIDTH - 70)) player.x=CANVAS_WIDTH-70;
+	if (player.y > (CANVAS_HEIGHT - 50)) player.y=CANVAS_HEIGHT-50;
+	if (player.x < 0) player.x=0;
+	if (player.y < 0) player.y=0;
+	playerBullets.forEach(function(bullet) {
+    		bullet.update();
+  	});
+
+  	playerBullets = playerBullets.filter(function(bullet) {
+    		return bullet.active;
+  	});
+	enemies.forEach(function(enemy) {
+    		enemy.update();
+  	});
+
+  	enemies = enemies.filter(function(enemy) {
+    		return enemy.active;
+  	});
+
+  	if(Math.random()*10 < 0.1) {
+    		enemies.push(Enemy());
+  	}
+	handleCollisions();
+}
+
+function collides(a, b) {
+  	return a.x < b.x + b.width &&
+         	a.x + a.width > b.x &&
+         	a.y < b.y + b.height &&
+         	a.y + a.height > b.y;
+}
+
+function handleCollisions() {
+  	playerBullets.forEach(function(bullet) {
+    		enemies.forEach(function(enemy) {
+      			if (collides(bullet, enemy)) {
+        			enemy.explode();
+        			bullet.active = false;
+      			}
+    		});
+  	});
+
+  	enemies.forEach(function(enemy) {
+    		if (collides(enemy, player)) {
+      			enemy.explode();
+      			player.explode();
+    		}
+  	});
+}
+
+var left=new Boolean(0); 
+var right=new Boolean(0);
+var down=new Boolean(0);
+var up=new Boolean(0);
+left=true;
+left=false;
+down=true;
+down=false;
+up=true;
+up=false;
+
+
+function keydown(event){
+	if (event.keyCode==38) up=true;	
+	if (event.keyCode==37) left=true;
+	if (event.keyCode==39) right=true;
+	if (event.keyCode==40) down=true;
+	if (event.keyCode==48) player.shoot(0);
+	if (event.keyCode==49) player.shoot(1);
+	if (event.keyCode==50) player.shoot(2);
+	if (event.keyCode==51) player.shoot(3);
+	if (event.keyCode==52) player.shoot(4);
+	if (event.keyCode==53) player.shoot(5);
+	if (event.keyCode==54) player.shoot(6);
+	if (event.keyCode==55) player.shoot(7);
+	if (event.keyCode==56) player.shoot(8);
+	if (event.keyCode==57) player.shoot(9);
+}
+function keyup(event){
+	if (event.keyCode==38) up=false;
+	if (event.keyCode==37) left=false;
+	if (event.keyCode==39) right=false;
+	if (event.keyCode==40) down=false;
+}
+
+var player = {
+	x: 0,
+	y: 0,
+	width:70,
+	height:66,
+	draw: function() {
+		ctx.drawImage(avatar,this.x,this.y);
+	}
+};
+var playerBullets = [];
+
+function Bullet(I) {
+ 	I.active = true;
+
+	I.xVelocity = I.speed;
+  	I.yVelocity = 0;
+  	I.width = 3;
+  	I.height = 3;
+  	I.color = "#000";
+
+  	I.inBounds = function() {
+    		return I.x >= 0 && I.x <= CANVAS_WIDTH &&
+      			I.y >= 0 && I.y <= CANVAS_HEIGHT;
+  	};
+
+  	I.draw = function() {
+    		ctx.fillStyle = this.color;
+		ctx.fillText(I.value.toString(), this.x,this.y);
+  	};
+
+  	I.update = function() {
+    		I.x += I.xVelocity;
+    		I.y += I.yVelocity;
+
+    		I.active = I.active && I.inBounds();
+  	};
+
+  	return I;
+}
+
+player.shoot = function(val) {
+  	var bulletPosition = this.midpoint();
+ 	playerBullets.push(Bullet({
+		value: val,
+    		speed: 5,
+   		x: bulletPosition.x,
+    		y: bulletPosition.y
+  	}));
+};
+
+
+player.midpoint = function() {
+  	return {
+    		x: this.x + this.width/2,
+    		y: this.y + this.height/2
+  	};
+};
+
+var enemies = [];
+
+function Enemy(I) {
+  	I = I || {};
+
+  	I.active = true;
+
+  	I.color = "#A2B";
+
+  	I.x = CANVAS_WIDTH;
+  	I.y = CANVAS_HEIGHT / 4 + Math.random() * CANVAS_HEIGHT / 2;
+  	I.xVelocity = -2;
+  	I.yVelocity = 0;
+
+  	I.width = 32;
+  	I.height = 32;
+
+  	I.inBounds = function() {
+    		return I.x >= 0 && I.x <= CANVAS_WIDTH &&
+      			I.y >= 0 && I.y <= CANVAS_HEIGHT;
+  	};
+
+  	I.draw = function() {
+    		ctx.fillStyle = this.color;
+    		ctx.fillRect(this.x, this.y, this.width, this.height);
+  	};
+
+  	I.update = function() {
+    		I.x += I.xVelocity;
+    		I.y += I.yVelocity;
+    		I.active = I.active && I.inBounds();
+  	};
+	I.explode = function(){
+		I.active = false;
+	}
+
+  return I;
+};
+
+player.explode=function(){
+
+};
+
+
+</script>
+
+</body>
+</html>

@@ -38,19 +38,20 @@ var mouseY = 0;
 
 // Image sources
 var menu = new Image();
-menu.src = '';
-/*
-var choose = new Image();
+menu.src = 'images/mathius_title.png';
+
+/*var choose = new Image();
 choose.src = 'images/mystery.png';
 var startImg = new Image ();
-startImg.src = '';
+startImg.src = 'images/mathius_title.png';
+*/
 var creditsImg = new Image();
-creditsImg.src = 'images/credits.jpg';
+creditsImg.src = 'images/Mathius_Credits.png';
 var controlsImg = new Image();
-controlsImg.src = '';
+controlsImg.src = 'images/controls_comic.png';
 var gameOverImg = new Image();
-gameOverImg.src = '';
-var enterNameImg = new Image();
+gameOverImg.src = 'images/GAMEOVER.png';
+/*var enterNameImg = new Image();
 enterNameImg.src = '';
 */
 
@@ -65,7 +66,7 @@ function init(){
 //menu
 function drawMenu(){
 	ctxMain.drawImage(menu,0,0,gameWidth,gameHeight,0,0,gameWidth,gameHeight); //draw the entire image menu
-	ctxMain.drawImage(choose,0,0,gameWidth,GameHeight,0,0,gameWidth,gameHeight);
+	//ctxMain.drawImage(choose,0,0,gameWidth,GameHeight,0,0,gameWidth,gameHeight);
 }
 
 //Button
