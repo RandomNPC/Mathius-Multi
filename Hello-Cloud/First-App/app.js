@@ -2,15 +2,28 @@ module.exports=function() {
 	/*
 	 * Module dependencies.
 	 */
+	if(process.env.VCAP_SERVICES){
+		var env = JSON.parse(process.env.VCAP_SERVICES);
+		var mongo = env['mongodb-2.2'][0]['credentials'];
+	}
+	
 	var express=require('express');
 	var http=require('http');
-	var mongo = require('mongojs').connect('localhost/Mathius',['scores']);
+	
+	var create_URL = function(obj){
+		obj.hostname = (obj.hostname || 'localhost');
+		obj.port = (obj.port || 27017);
+		obj.db = (obj.db || 'test');
+		return "mongodb://" + obj.hostname + ":" + obj.port + "/" + obj.db;
+	}
+	
+	var db = require('mongojs').connect(create_URL(mongo),['scores']);
 
 	var app=express();
 	
-	function Score(username,score){
-		this.username = username;
+	function Highscore(score,name){
 		this.score = score;
+		this.name = name;
 	}
 
 	app.configure(function() {
@@ -22,6 +35,8 @@ module.exports=function() {
 		app.use('/', express.static(__dirname+"/public/images"));
 	});
 
+	console.log(db);
+	
 	app.get('/', function(req, res) {
 		res.render('stable.html');
 	});
@@ -31,12 +46,35 @@ module.exports=function() {
 		console.log('Express server listening on port '+app.get('port'));
 	});
 	
-	app.get('/gameover/*',function(req,res){
+	app.get('/gameover/*',function(req,result){
 		
 		var _gameScore = req.params[0];
-		//check to see if in top 10
-		//if in top 10, ask for input name
-		//have mongodb save the score
+		var obj = new Highscore(_gameScore,'Jill');
+		
+		db.scores.save(obj,function(err,res){
+			if(!res || err) console.log('error saving item to server: ' + err);
+			db.scores.find().count(function(err,res){
+				if(res < MAX){
+					//console.log('res: ' + res);
+					//console.log('we have a high score! Not enough max entries');
+					return;
+				}
+				else{
+					db.scores.find().sort({score: 1}).limit(1,function(err,res){
+						res.forEach(function(search){
+							console.log(search);
+							db.scores.remove(search);
+						});
+						db.scores.find(obj,function(err,res){
+							if(!res) result.render('lose.html');
+							else result.render('win.html');
+						})
+					});
+				}
+			});
+		});
+		
+		
 		
 		
 	});

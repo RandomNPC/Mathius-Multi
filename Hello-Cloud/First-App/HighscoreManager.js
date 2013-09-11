@@ -7,7 +7,7 @@ var MAX = 7;
 
 var HighscoreManager = function(){
 	
-	this.add = function(obj){	
+	/*this.add = function(obj){	
 		db.scores.save(obj,function(err, res){
 			if(!res || err) console.log('error saving item to server: ' + err);
 			db.scores.find({ score : { $lt : obj.score}}).count(function(err,res){
@@ -32,19 +32,21 @@ var HighscoreManager = function(){
 				});
 			});
 		});
-	}
+	}*/
 	
-	/*this.add = function(obj){
+	this.add = function(obj){
 		db.scores.save(obj,function(err,res){
 			if(!res || err) console.log('error saving item to server: ' + err);
 			db.scores.find().count(function(err,res){
 				if(res < MAX){
-					console.log('we have a high score!');
+					console.log('res: ' + res);
+					console.log('we have a high score! Not enough max entries');
 					return;
 				}
 				else{
 					db.scores.find().sort({score: 1}).limit(1,function(err,res){
 						res.forEach(function(search){
+							console.log(search);
 							db.scores.remove(search);
 						});
 						db.scores.find(obj,function(err,res){
@@ -56,7 +58,7 @@ var HighscoreManager = function(){
 			});
 		});
 	
-	}*/
+	}
 	
 	this.is
 	
