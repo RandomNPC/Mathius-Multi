@@ -1,4 +1,3 @@
-
 var canvasMain = document.getElementById('main');
 var ctxMain = canvasMain.getContext('2d');
 
@@ -6,31 +5,39 @@ var gameWidth = canvasMain.width;
 var gameHeight = canvasMain.height;
 
 var goback = new Button(32,188,111,213); //mystery buttons
-var mystery = new Button(280,529,96,198);
-var buttonSound = new Audio('snds/Blip_Select.wav');
-
+//var mystery = new Button(280,529,96,198);
 var btnPlay = new Button(100,700,200,250); //Start
 var highScoresBtn =  new Button(100,700,260,310);//High Score
 var controlsBtn = new Button(100,700,320,370); //control
 var creditsBtn = new Button(100,700,380,430);//credits
 
+// Switch statements 
 var MAIN_MENU = 1; 
-var MYSTERY = 2; //START GAME
+var START_GAME = 2; //START GAME
 var CONTROLS = 3;
 var HIGHSCORE = 4;
 var CREDITS = 5;
 
+//
 var state = MAIN_MENU;
 
+//Mouse coordinates
 var mouseX = 0;
 var mouseY = 0;
 
+
 var menu = new Image();
-menu.src = 'images/menu.png';
+menu.src = '';
+/*
 var choose = new Image();
 choose.src = 'images/mystery.png';
+var startImg = new Image ();
+startImg.src = '';
 var creditsImg = new Image();
 creditsImg.src = 'images/credits.jpg';
+var controlsImg = new Image();
+controlsImg.src = '';
+*/
 
 menu.addEventListener('load',init,false); //when image finishes loading, goto init function.
 
@@ -43,7 +50,7 @@ function init(){
 //menu
 function drawMenu(){
 	ctxMain.drawImage(menu,0,0,gameWidth,gameHeight,0,0,gameWidth,gameHeight); //draw the entire image menu
-	//ctxMain.drawImage(choose,0,0,gameWidth,GameHeight,0,0,gameWidth,gameHeight);
+	ctxMain.drawImage(choose,0,0,gameWidth,GameHeight,0,0,gameWidth,gameHeight);
 }
 
 //Button
@@ -55,7 +62,7 @@ function Button(xL,xR,yT,yB){
 }
 
 Button.prototype.checkClicked = function() { //checks to see if you have clicked within the area
-    if (this.xLeft <= mouseX && mouseX <= this.xRight && this.yTop <= mouseY && mouseY <= this.yBottom) { buttonSound.play(); return true; }
+    if (this.xLeft <= mouseX && mouseX <= this.xRight && this.yTop <= mouseY && mouseY <= this.yBottom) return true;
 };
 
 //event
@@ -68,9 +75,9 @@ function mouseClicked(e) { //event listener binded from line 19
 			if (btnPlay.checkClicked()){
 				console.log("Play Button");
 				ctxMain.drawImage(choose,0,0,gameWidth,gameHeight,0,0,gameWidth,gameHeight);
-				state = MYSTERY;
+				state = START_GAME;
 			}
-			if(highScoresBtn.checkClick()){
+			if(highScoresBtn.checkClicked()){
 				console.log("HighScore Clicked");
 				//Draw goes here
 				state = HIGHSCORE;
@@ -88,21 +95,31 @@ function mouseClicked(e) { //event listener binded from line 19
 				console.log("it changed state");
 			}
 			break;
-		case MYSTERY:
+		case CONTROLS: // 3
+			if(goback.CheckClicked()){
+				ctxMain.drawImage(menu,0,0,gameWidth,gameHeight,0,0,gameWidth,gameHeight);
+				state = MAIN_MENU;
+			}
+			break;
+		case START_GAME: // Going back to the main menu (2) 
 			if(goback.checkClicked()){
 				ctxMain.drawImage(menu,0,0,gameWidth,gameHeight,0,0,gameWidth,gameHeight);
 				state = MAIN_MENU;
 			}
-			if(mystery.checkClicked()){
-				alert('boo');
+			break;
+		case HIGHSCORE: // 4
+			if (goback.checkClicked()){
+				ctxMain.drawImage(menu,0,0,gameWidth,gameHeight,0,0,gameWidth,gameHeight);
+				state = MAIN_MENU;
 			}
 			break;
-		case CREDITS:
+		case CREDITS: // 5
 			if(goback.checkClicked()){
 				ctxMain.drawImage(menu,0,0,gameWidth,gameHeight,0,0,gameWidth,gameHeight);
 				state = MAIN_MENU;
 			}			
 			break;
+		case 
 		default:
 			break;
 	}
