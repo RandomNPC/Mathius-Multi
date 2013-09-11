@@ -5,6 +5,10 @@ var gameWidth = canvasMain.width;
 var gameHeight = canvasMain.height;
 
 var selectSound = new Audio('snds/Blip_Select.wav');
+var explosionSound = new Audio('snds/Explosion6.wav');
+var hurtSound = new Audio('snds/Hit_Hurt.wav');
+var pupSound = new Audio('snds/Powerup8.wav');
+var shootSound = new Audio('snds/Laser_Shoot2.wav');
 
 
 var goback = new Button(32,188,111,213); //mystery buttons note: remember to change coordinates when we import images
