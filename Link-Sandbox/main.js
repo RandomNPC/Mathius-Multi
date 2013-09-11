@@ -4,6 +4,9 @@ var ctxMain = canvasMain.getContext('2d');
 var gameWidth = canvasMain.width;
 var gameHeight = canvasMain.height;
 
+var selectSound = new Audio('snds/Blip_Select.wav');
+
+
 var goback = new Button(32,188,111,213); //mystery buttons note: remember to change coordinates when we import images
 //var mystery = new Button(280,529,96,198);
 var btnPlay = new Button(100,700,200,250); //Start
@@ -44,7 +47,7 @@ controlsImg.src = '';
 var gameOverImg = new Image();
 gameOverImg.src = '';
 var enterNameImg = new Image();
-enterNameImg.src = new Image();
+enterNameImg.src = '';
 */
 
 menu.addEventListener('load',init,false); //when image finishes loading, goto init function.
@@ -68,9 +71,8 @@ function Button(xL,xR,yT,yB){
     this.yTop = yT;
     this.yBottom = yB;
 }
-
 Button.prototype.checkClicked = function() { //checks to see if you have clicked within the area
-    if (this.xLeft <= mouseX && mouseX <= this.xRight && this.yTop <= mouseY && mouseY <= this.yBottom) return true;
+    if (this.xLeft <= mouseX && mouseX <= this.xRight && this.yTop <= mouseY && mouseY <= this.yBottom) {selectSound.play; return true;}
 };
 
 //event
@@ -140,7 +142,7 @@ function mouseClicked(e) { //event listener binded from line 19
 			ctxMain.drawImage(menu,0,0,gameWidth,gameHeight,0,0,gameWidth,gameHeight);
 			state = MAIN_MENU;
 			break;
-		case 
+		//case 
 		default:
 			break;
 	}
