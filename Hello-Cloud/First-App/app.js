@@ -16,10 +16,9 @@ module.exports=function() {
 		obj.hostname = (obj.hostname || 'localhost');
 		obj.port = (obj.port || 27017);
 		obj.db = (obj.db || 'test');
+		console.log("mongodb://" + obj.username + ":" + obj.password + "@" + obj.hostname + ":" + obj.port + "/" + obj.db + "?auto_reconnect=true");
 		return "mongodb://" + obj.username + ":" + obj.password + "@" + obj.hostname + ":" + obj.port + "/" + obj.db + "?auto_reconnect=true";
 	}
-	
-	var scores = mongo.db;
 	
 	var db = require('mongojs').connect(create_URL(mongo),['scores']);
 
@@ -49,11 +48,8 @@ module.exports=function() {
 	});
 	
 	app.get('/gameover/*',function(req,result){
+	/*	var obj = new Highscore(req.params[0],'Jill');
 		
-		var _gameScore = req.params[0];
-		console.log(_gameScore);
-		var obj = new Highscore(_gameScore,'Jill');
-		/*
 		db.scores.save(obj,function(err,res){
 			if(!res || err) console.log('error saving item to server: ' + err);
 			db.scores.find().count(function(err,res){
@@ -75,18 +71,6 @@ module.exports=function() {
 					});
 				}
 			});
-		});*/
-		db.scores.drop();
-		/*
-		db.scores.save({potato: 'stuff'},function(err,res){});*/
-		db.scores.find().forEach(function(stuff){
-			console.log(stuff);
 		});
-		
-		
-		
-		
-		
-	});
-
+	});*/
 };
