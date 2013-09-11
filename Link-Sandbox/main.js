@@ -4,7 +4,7 @@ var ctxMain = canvasMain.getContext('2d');
 var gameWidth = canvasMain.width;
 var gameHeight = canvasMain.height;
 
-var goback = new Button(32,188,111,213); //mystery buttons
+var goback = new Button(32,188,111,213); //mystery buttons note: remember to change coordinates when we import images
 //var mystery = new Button(280,529,96,198);
 var btnPlay = new Button(100,700,200,250); //Start
 var highScoresBtn =  new Button(100,700,260,310);//High Score
@@ -17,6 +17,10 @@ var START_GAME = 2; //START GAME
 var CONTROLS = 3;
 var HIGHSCORE = 4;
 var CREDITS = 5;
+var GAME_OVER = 6;
+var ENTER_HIGHSCORE = 7;
+
+var highScoreName = "";
 
 //
 var state = MAIN_MENU;
@@ -25,7 +29,7 @@ var state = MAIN_MENU;
 var mouseX = 0;
 var mouseY = 0;
 
-
+// Image sources
 var menu = new Image();
 menu.src = '';
 /*
@@ -37,6 +41,10 @@ var creditsImg = new Image();
 creditsImg.src = 'images/credits.jpg';
 var controlsImg = new Image();
 controlsImg.src = '';
+var gameOverImg = new Image();
+gameOverImg.src = '';
+var enterNameImg = new Image();
+enterNameImg.src = new Image();
 */
 
 menu.addEventListener('load',init,false); //when image finishes loading, goto init function.
@@ -102,6 +110,8 @@ function mouseClicked(e) { //event listener binded from line 19
 			}
 			break;
 		case START_GAME: // Going back to the main menu (2) 
+			//if highscore draw ENTER HIGHSCORE and change state to enter high score.
+			// else draw GAME_OVER screen or change state to game over.
 			if(goback.checkClicked()){
 				ctxMain.drawImage(menu,0,0,gameWidth,gameHeight,0,0,gameWidth,gameHeight);
 				state = MAIN_MENU;
@@ -118,6 +128,17 @@ function mouseClicked(e) { //event listener binded from line 19
 				ctxMain.drawImage(menu,0,0,gameWidth,gameHeight,0,0,gameWidth,gameHeight);
 				state = MAIN_MENU;
 			}			
+			break;
+		case GAME_OVER: // 6 Losing
+			if(goback.checkClicked()){
+				ctxMain.drawImage(menu,0,0,gameWidth,gameHeight,0,0,gameWidth,gameHeight);
+				state = MAIN_MENU;
+			}
+			break;
+		case ENTER_HIGHSCORE: //Game over but input high score
+			window.prompt("Enter Your Name",highScoreName);
+			ctxMain.drawImage(menu,0,0,gameWidth,gameHeight,0,0,gameWidth,gameHeight);
+			state = MAIN_MENU;
 			break;
 		case 
 		default:
