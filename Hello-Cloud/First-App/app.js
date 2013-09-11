@@ -2,6 +2,8 @@ module.exports=function() {
 	/*
 	 * Module dependencies.
 	 */
+	 var MAX = 7;
+	 
 	if(process.env.VCAP_SERVICES){
 		var env = JSON.parse(process.env.VCAP_SERVICES);
 		var mongo = env['mongodb-2.2'][0]['credentials'];
@@ -14,8 +16,10 @@ module.exports=function() {
 		obj.hostname = (obj.hostname || 'localhost');
 		obj.port = (obj.port || 27017);
 		obj.db = (obj.db || 'test');
-		return "mongodb://" + obj.hostname + ":" + obj.port + "/" + obj.db;
+		return "mongodb://" + obj.username + ":" + obj.password + "@" + obj.hostname + ":" + obj.port + "/" + obj.db + "?auto_reconnect=true";
 	}
+	
+	var scores = mongo.db;
 	
 	var db = require('mongojs').connect(create_URL(mongo),['scores']);
 
@@ -34,8 +38,6 @@ module.exports=function() {
 		app.use(express.methodOverride());
 		app.use('/', express.static(__dirname+"/public/images"));
 	});
-
-	console.log(db);
 	
 	app.get('/', function(req, res) {
 		res.render('stable.html');
@@ -49,8 +51,9 @@ module.exports=function() {
 	app.get('/gameover/*',function(req,result){
 		
 		var _gameScore = req.params[0];
+		console.log(_gameScore);
 		var obj = new Highscore(_gameScore,'Jill');
-		
+		/*
 		db.scores.save(obj,function(err,res){
 			if(!res || err) console.log('error saving item to server: ' + err);
 			db.scores.find().count(function(err,res){
@@ -62,7 +65,7 @@ module.exports=function() {
 				else{
 					db.scores.find().sort({score: 1}).limit(1,function(err,res){
 						res.forEach(function(search){
-							console.log(search);
+							//console.log(search);
 							db.scores.remove(search);
 						});
 						db.scores.find(obj,function(err,res){
@@ -72,7 +75,14 @@ module.exports=function() {
 					});
 				}
 			});
+		});*/
+		db.scores.drop();
+		/*
+		db.scores.save({potato: 'stuff'},function(err,res){});*/
+		db.scores.find().forEach(function(stuff){
+			console.log(stuff);
 		});
+		
 		
 		
 		
